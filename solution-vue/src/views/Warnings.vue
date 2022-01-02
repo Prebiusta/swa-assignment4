@@ -1,5 +1,5 @@
 <template>
-  <v-row class="my-3" align="center">
+  <v-row align="center" class="my-3">
     <v-col cols="8">
       <v-btn class="mr-2" color="success" @click="subscribe">Subscribe</v-btn>
       <v-btn class="mr-2" color="error" @click="unsubscribe">Unsubscribe</v-btn>
@@ -37,7 +37,7 @@ export default {
   components: {Warning},
   data() {
     return {
-      subject: webSocket('ws://localhost:8090/warnings'),
+      subject: null,
       subscription: null,
       warnings: [],
       severities: [3]
@@ -54,16 +54,13 @@ export default {
   methods: {
     unsubscribe() {
       this.subject.next({message: 'unsubscribe'})
-    }
-    ,
+    },
     subscribe() {
       this.subject.next({message: 'subscribe'})
-    }
-    ,
+    },
     handleError(err) {
       console.error(err)
-    }
-    ,
+    },
     handleMessage(msg) {
       console.log("Message received", msg)
       const {warnings} = msg;
@@ -79,21 +76,21 @@ export default {
           this.warnings.push(msg)
         }
       }
-    }
-    ,
+    },
     handleComplete() {
       console.log("Connection successfully established")
     }
-  }
-  ,
+  },
+  created() {
+    this.subject = webSocket('ws://localhost:8090/warnings')
+  },
   mounted() {
     this.subscription = this.subject.subscribe({
       next: this.handleMessage,
       error: this.handleError,
-      complete: this.handleComplete
+      complete: this.handleComplete,
     });
-  }
-  ,
+  },
   destroyed() {
     if (this.subscription)
       this.subscription.unsubscribe()
