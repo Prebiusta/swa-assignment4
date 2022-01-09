@@ -75,10 +75,7 @@
       />
     </v-col>
 
-    <v-col>
-      <p>{{ greeting }}</p>
-      <v-text-field @input="handleChange" :value="greeting" outlined/>
-    </v-col>
+    <v-btn id="myButton">Click me</v-btn>
   </v-row>
 </template>
 
@@ -87,6 +84,7 @@ import {format} from 'date-fns'
 import CityWrapper from "@/components/CityWrapper";
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import CustomTimePicker from "@/components/CustomTimePicker";
+import {fromEvent, interval, map, throttle} from "rxjs";
 
 const DEFAULT_TIME_FORMAT = 'HH:mm:ss'
 
@@ -138,9 +136,6 @@ export default {
     }
   },
   methods: {
-    handleChange(value) {
-      this.setGreeting(value)
-    },
     ...mapMutations('data', [
         'setGreeting'
     ]),
@@ -158,6 +153,14 @@ export default {
   created() {
     this.fetchWeatherData()
     this.fetchForecastValues()
+  },
+  mounted() {
+    const button = document.getElementById("myButton")
+
+    fromEvent(button, 'click')
+        .pipe(throttle(() => interval(1000)))
+        .pipe(map(event => event.clientX))
+        .subscribe(data => console.log(data))
   }
 }
 </script>

@@ -20,11 +20,6 @@
       <v-container>
         <router-view/>
       </v-container>
-
-      <v-card>
-        <v-btn @click="login">Login</v-btn>
-        <v-btn @click="getRoles">Get Roles</v-btn>
-      </v-card>
     </v-main>
   </v-app>
 </template>
@@ -39,12 +34,6 @@ export default {
   data: () => ({
     //
   }),
-  methods: {
-    login() {
-    },
-    getRoles() {
-    }
-  }
 };
 </script>
 
